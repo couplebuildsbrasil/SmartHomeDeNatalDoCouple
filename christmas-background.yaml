@@ -1,0 +1,25 @@
+bg-animation:
+  duration: 60000
+  transparency:
+    header:
+      enable: true
+    sidebar:
+      enable: true
+  background:
+    view:
+      home:
+        - id: application.1.media-background
+          style: 'min-width: 100vw; min-height: 100vh; border:0; overflow: hidden;'
+          cache: true
+          duration: false
+          redraw: 0
+          parameters:
+            progressBarOpacity: 0.2
+            showProgressBar: true
+            backgroundColor: '#000000'
+            mediaList:
+              - file: /local/images/ChristmasLivingRoom.mp4
+                muted: true
+                preload: auto
+                tags:
+                  - video

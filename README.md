@@ -7,8 +7,8 @@ Quer saber mais sobre bastidores e nos acompanhar mais de perto? Segue no [Insta
 
 Neste Repo você encontra:
 
-Exemplo de configuração de background de Natal
-Exemplo de tema de Natal do Home assistant
-Efeito Twinkle com duas cores no ESPHome
-Exemplo de automação - Cinema de Natal
+[Exemplo de configuração de background de Natal](christmas-background.yaml)
+[Exemplo de tema de Natal do Home assistant](christmas-theme.yaml)
+[Efeito Twinkle com duas cores no ESPHome](twinkle-effect-example.yaml)
+[Exemplo de automação - Cinema de Natal](movie-night-script.yaml)
 

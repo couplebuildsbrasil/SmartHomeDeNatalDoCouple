@@ -1,0 +1,19 @@
+custom-christmas:
+  ha-card-background: rgba(51, 99, 63, 0.64)
+  primary-background-color: rgba(51, 99, 63, 1)
+  card-background-color: rgba(51, 99, 63, 0.75)
+  primary-text-color: "rgba(255, 194, 154, 1)"
+  rgb-primary-text-color: rgb(255, 194, 154)"
+  secondary-text-color: "#fcd7bfff"
+
+  primary-color: rgba(0, 255, 64, 0.5)
+  accent-color: rgba(255, 55, 55, 0.79)
+
+  ha-color-on-primary-normal: rgba(255, 55, 55, 0.79)
+
+  input-fill-color: rgba(255, 89, 89, 0.3)
+  app-header-edit-background-color: rgba(10, 10, 10, 0.4)
+
+  # mushroom
+  mush-rgb-state-entity: 255, 55, 55
+  mush-rgb-state-light: 255, 55, 55

@@ -1,0 +1,88 @@
+light:
+  - platform: neopixelbus
+    name: TV_backlight
+    pin: 2
+    num_leds: 179
+    type: RGB
+    variant: WS2812
+    restore_mode: RESTORE_DEFAULT_OFF
+    effects:
+      - addressable_lambda:
+          name: "Christmas (Red/Green)"
+          update_interval: 2ms
+          lambda: |-
+            // Configuration constants
+            const float TWINKLE_PROBABILITY = 0.1f; // Controls how often new twinkles start (0.02 is a nice, sparse twinkle)
+            const uint8_t PROGRESS_INCREMENT = 3; // Determines the speed of the fade (1 for smooth fade over 255 steps)
+            const size_t TWINKLE_RADIUS = 20; // 1 means the center LED + 1 LED on each side (3 LEDs total per twinkle)
+
+            // MSB (0x80 or 128) is used to store the color choice: 
+            // 0 = Red (R)
+            // 1 = Green (G)
+            const uint8_t COLOR_FLAG_GREEN = 0x80;
+            const uint8_t PROGRESS_MASK = 0x7F; // Mask to extract the 7-bit progress (0-127)
+
+            // 1. Process existing twinkles and fade them out
+            for (int i = 0; i < it.size(); i++) {
+              uint8_t effect_data = it[i].get_effect_data();
+              
+              if (effect_data != 0) {
+                
+                // --- Color & Progress Extraction ---
+                Color base_color;
+                // Check the MSB to determine the color (0x80 bit set means Green)
+                if (effect_data & COLOR_FLAG_GREEN) {
+                  base_color = Color(0, 255, 0); // Green
+                } else {
+                  base_color = Color(255, 0, 0); // Red
+                }
+                
+                // Extract the 7-bit fade progress (0-127)
+                uint8_t current_progress = effect_data & PROGRESS_MASK;
+                
+                // Calculate brightness using the half_sin8 function, 
+                // scaling the 7-bit progress (0-127) up to the 8-bit range (0-255) for the sine wave.
+                uint8_t sine_input = current_progress * 2;
+                uint8_t brightness = half_sin8(sine_input);
+
+                // Apply the calculated brightness to the base color
+                it[i] = base_color * brightness;
+
+                // --- Progress Update ---
+                uint8_t new_progress = current_progress + PROGRESS_INCREMENT;
+
+                // Check for cycle completion (progress exceeds the 7-bit limit)
+                if (new_progress > PROGRESS_MASK) {
+                  it[i].set_effect_data(0); // Cycle finished, mark as off/available
+                } else {
+                  // Preserve the color flag and combine with the new progress
+                  uint8_t color_flag = effect_data & COLOR_FLAG_GREEN;
+                  it[i].set_effect_data(color_flag | new_progress);
+                }
+              } else {
+                // LED is not twinkling, keep it off
+                it[i] = Color::BLACK;
+              }
+            }
+
+            // 2. Start new twinkles randomly
+            while (random_float() < TWINKLE_PROBABILITY) {
+              const size_t pos = random_uint32() % it.size();
+              
+              // 2a. Determine the color for this new cluster (randomly Red or Green)
+              uint8_t chosen_color_flag = (random_uint32() % 2 == 0) ? 0 : COLOR_FLAG_GREEN;
+
+              // Start twinkle effect for the center point and the surrounding LEDs
+              for (int j = -TWINKLE_RADIUS; j <= (int)TWINKLE_RADIUS; ++j) {
+                const int twinkle_pos = pos + j;
+
+                // Check boundaries
+                if (twinkle_pos >= 0 && twinkle_pos < (int)it.size()) {
+                  // Only start a twinkle if the LED is currently off (effect_data == 0)
+                  if (it[twinkle_pos].get_effect_data() == 0) {
+                    // Set effect_data to 1 (progress start) combined with the chosen color flag
+                    it[twinkle_pos].set_effect_data(1 | chosen_color_flag);
+                  }
+                }
+              }
+            }

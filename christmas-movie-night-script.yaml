@@ -1,0 +1,167 @@
+sequence:
+  - parallel:
+      - action: media_player.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: media_player.living_room_firetv
+      - action: media_player.play_media
+        data:
+          media:
+            media_content_id: JIngle Bells Kevin Macleod
+            media_content_type: SPOTIFY
+        target:
+          entity_id: media_player.echo_sala
+      - action: input_select.select_option
+        metadata: {}
+        data:
+          option: Cinema
+        target:
+          entity_id: input_select.social_area_scene
+      - action: light.turn_on
+        metadata: {}
+        data:
+          effect: Christmas (Red/Green)
+          brightness_pct: 100
+        target:
+          entity_id: light.living_tv_backlight
+      - action: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.christmas_decoration_1
+      - action: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.microwave_power_plug
+      - action: media_player.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: media_player.lg_webos_tv_nano75sqa
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 20
+      milliseconds: 0
+  - action: androidtv.adb_command
+    metadata: {}
+    data:
+      command: >-
+        adb shell am start -c android.intent.category.LEANBACK_LAUNCHER -a
+        android.intent.action.VIEW -d http://www.netflix.com/search?query=test
+        -f 0x10808000 -e source 30 com.netflix.ninja/.MainActivity
+    target:
+      entity_id: media_player.living_room_firetv
+  - wait_for_trigger:
+      - trigger: state
+        entity_id:
+          - media_player.living_room_firetv
+        to:
+          - playing
+    continue_on_timeout: false
+    timeout:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+  - action: androidtv.adb_command
+    metadata: {}
+    data:
+      command: adb shell input keyevent KEYCODE_DPAD_CENTER
+    target:
+      entity_id: media_player.living_room_firetv
+  - action: androidtv.adb_command
+    metadata: {}
+    data:
+      command: adb shell input keyevent KEYCODE_BACK
+    target:
+      entity_id: media_player.living_room_firetv
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+  - action: androidtv.adb_command
+    metadata: {}
+    data:
+      command: adb shell input keyevent KEYCODE_DPAD_LEFT
+    target:
+      entity_id: media_player.living_room_firetv
+  - action: androidtv.adb_command
+    metadata: {}
+    data:
+      command: adb shell input keyevent KEYCODE_DPAD_CENTER
+    target:
+      entity_id: media_player.living_room_firetv
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+    enabled: false
+  - action: androidtv.adb_command
+    metadata: {}
+    data:
+      command: adb shell input text "10"
+    target:
+      entity_id: media_player.living_room_firetv
+  - action: androidtv.adb_command
+    metadata: {}
+    data:
+      command: adb shell input text "70"
+    target:
+      entity_id: media_player.living_room_firetv
+  - action: androidtv.adb_command
+    metadata: {}
+    data:
+      command: adb shell input text "93"
+    target:
+      entity_id: media_player.living_room_firetv
+  - wait_for_trigger:
+      - trigger: state
+        entity_id:
+          - media_player.living_room_firetv
+        to:
+          - playing
+    continue_on_timeout: false
+    timeout:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+  - repeat:
+      count: 10
+      sequence:
+        - action: media_player.volume_down
+          metadata: {}
+          data: {}
+          target:
+            entity_id: media_player.echo_sala
+        - delay:
+            hours: 0
+            minutes: 0
+            seconds: 0
+            milliseconds: 500
+  - action: media_player.media_stop
+    metadata: {}
+    data: {}
+    target:
+      entity_id: media_player.echo_sala
+  - action: media_player.volume_set
+    metadata: {}
+    data:
+      volume_level: 0.5
+    target:
+      entity_id: media_player.echo_sala
+  - action: light.turn_on
+    metadata: {}
+    data:
+      effect: None
+      brightness_pct: 49
+    target:
+      entity_id: light.living_tv_backlight
+alias: Christmas Movie Night
+description: ""
+mode: restart
